@@ -1,0 +1,292 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>El Juego de los Acertijos</title>
+    <style>
+        :root {
+            --primary-color: #1a1a1a;
+            --accent-color: #00ff00;
+            --text-color: #ffffff;
+            --shadow-color: rgba(0, 255, 0, 0.3);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Courier New', monospace;
+        }
+
+        body {
+            background-color: var(--primary-color);
+            color: var(--text-color);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 2rem;
+        }
+
+        .container {
+            max-width: 800px;
+            width: 100%;
+            text-align: center;
+        }
+
+        .game-title {
+            font-size: 2.5rem;
+            margin-bottom: 2rem;
+            text-shadow: 0 0 10px var(--shadow-color);
+            animation: glow 2s ease-in-out infinite alternate;
+        }
+
+        .riddler-section {
+            background: rgba(0, 0, 0, 0.5);
+            padding: 2rem;
+            border-radius: 10px;
+            margin: 2rem 0;
+            box-shadow: 0 0 20px var(--shadow-color);
+        }
+
+        .riddle {
+            font-size: 1.2rem;
+            margin: 1.5rem 0;
+            line-height: 1.6;
+            display: none;
+        }
+
+        .riddle.active {
+            display: block;
+            animation: fadeIn 0.5s ease-in;
+        }
+
+        .input-section {
+            margin: 2rem 0;
+        }
+
+        input[type="text"] {
+            background: rgba(0, 0, 0, 0.7);
+            border: 2px solid var(--accent-color);
+            color: var(--text-color);
+            padding: 0.8rem 1.5rem;
+            border-radius: 5px;
+            font-size: 1rem;
+            width: 300px;
+            max-width: 100%;
+            margin-bottom: 1rem;
+        }
+
+        button {
+            background: var(--accent-color);
+            color: var(--primary-color);
+            border: none;
+            padding: 0.8rem 2rem;
+            border-radius: 5px;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        button:hover {
+            background: #00cc00;
+            transform: scale(1.05);
+        }
+
+        .feedback {
+            margin-top: 1rem;
+            min-height: 24px;
+            color: var(--accent-color);
+        }
+
+        @keyframes glow {
+            from {
+                text-shadow: 0 0 10px var(--shadow-color);
+            }
+            to {
+                text-shadow: 0 0 20px var(--shadow-color),
+                           0 0 30px var(--shadow-color);
+            }
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .progress-bar {
+            width: 100%;
+            height: 10px;
+            background: rgba(0, 0, 0, 0.5);
+            border-radius: 5px;
+            margin: 1rem 0;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: var(--accent-color);
+            width: 0%;
+            transition: width 0.5s ease;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1 class="game-title">El Juego de los Acertijos</h1>
+        
+        <div class="progress-bar">
+            <div class="progress-fill"></div>
+        </div>
+
+        <div class="riddler-section">
+            <div id="welcome-message" class="riddle active">
+                <p>¿Qué tan afilada es tu mente?<br>
+                Cada respuesta es un paso más cerca de la verdad.<br>
+                ¿Te atreves a intentarlo?</p>
+                <div class="input-section">
+                    <button onclick="startGame()">Comenzar el Juego</button>
+                </div>
+            </div>
+
+            <div id="riddle-1" class="riddle">
+                <p>Soy algo que nunca miente,<br>
+                y aunque todos me tengan,<br>
+                solo algunos me consultan. ¿Qué soy?</p>
+                <div class="input-section">
+                    <input type="text" id="answer-1" placeholder="Escribe tu respuesta...">
+                    <button onclick="checkAnswer(1)">Verificar</button>
+                </div>
+            </div>
+
+            <div id="riddle-2" class="riddle">
+                <p>Observa la secuencia de colores:</p>
+                <div style="font-size: 2rem; margin: 1rem 0;">
+                    🟢🟢🔴🔵🟢🔴
+                </div>
+                <p>Cuenta cada color y forma el código numérico.</p>
+                <div class="input-section">
+                    <input type="text" id="answer-2" placeholder="Formato: #-#-#-#">
+                    <button onclick="checkAnswer(2)">Verificar</button>
+                </div>
+            </div>
+
+            <div id="riddle-3" class="riddle">
+                <p>Un reloj suena dos veces a la 1,<br>
+                cuatro veces a las 2,<br>
+                y ocho veces a las 3.<br>
+                Si sigue este patrón, ¿cuántas veces suena a las 4?</p>
+                <div class="input-section">
+                    <input type="text" id="answer-3" placeholder="Ingresa el número...">
+                    <button onclick="checkAnswer(3)">Verificar</button>
+                </div>
+            </div>
+
+            <div id="riddle-4" class="riddle">
+                <p>Un zorro inteligente cruza el río tres veces,<br>
+                dejando un rastro,<br>
+                pero sin mojarse las patas. ¿Cómo lo hizo?</p>
+                <div class="input-section">
+                    <select id="answer-4">
+                        <option value="">Selecciona una opción...</option>
+                        <option value="nado">Nadó</option>
+                        <option value="volo">Voló</option>
+                        <option value="puente">Usó un puente</option>
+                    </select>
+                    <button onclick="checkAnswer(4)">Verificar</button>
+                </div>
+            </div>
+
+            <div id="riddle-5" class="riddle">
+                <p>Descifra la palabra final:</p>
+                <div style="margin: 1rem 0;">
+                    <img src="/api/placeholder/200/100" alt="Palabra pixelada: clave">
+                </div>
+                <div class="input-section">
+                    <input type="text" id="answer-5" placeholder="Escribe la palabra...">
+                    <button onclick="checkAnswer(5)">Verificar</button>
+                </div>
+            </div>
+
+            <div id="game-complete" class="riddle">
+                <h2>¡Felicitaciones!</h2>
+                <p>Has completado todos los acertijos.<br>
+                Tu mente es verdaderamente extraordinaria.</p>
+                <div class="input-section">
+                    <button onclick="restartGame()">Jugar de nuevo</button>
+                </div>
+            </div>
+        </div>
+        
+        <div class="feedback" id="feedback"></div>
+    </div>
+
+    <script>
+        let currentLevel = 0;
+        const totalLevels = 5;
+        
+        const answers = {
+            1: "espejo",
+            2: "2-2-1-1",
+            3: "16",
+            4: "puente",
+            5: "clave"
+        };
+
+        function startGame() {
+            currentLevel = 1;
+            updateGame();
+        }
+
+        function updateGame() {
+            // Hide all riddles
+            document.querySelectorAll('.riddle').forEach(riddle => {
+                riddle.classList.remove('active');
+            });
+
+            // Show current riddle
+            const currentRiddle = currentLevel === 0 ? 'welcome-message' :
+                                currentLevel > totalLevels ? 'game-complete' :
+                                `riddle-${currentLevel}`;
+            document.getElementById(currentRiddle).classList.add('active');
+
+            // Update progress bar
+            const progress = (currentLevel / totalLevels) * 100;
+            document.querySelector('.progress-fill').style.width = `${progress}%`;
+
+            // Clear feedback
+            document.getElementById('feedback').textContent = '';
+        }
+
+        function checkAnswer(level) {
+            const userAnswer = document.getElementById(`answer-${level}`).value.toLowerCase().trim();
+            const feedback = document.getElementById('feedback');
+
+            if (userAnswer === answers[level]) {
+                feedback.textContent = '¡Correcto! Avanzando al siguiente nivel...';
+                feedback.style.color = '#00ff00';
+                currentLevel++;
+                setTimeout(updateGame, 1500);
+            } else {
+                feedback.textContent = 'Mmm... Esa no es la respuesta correcta. ¡Inténtalo de nuevo!';
+                feedback.style.color = '#ff0000';
+            }
+        }
+
+        function restartGame() {
+            currentLevel = 0;
+            document.querySelectorAll('input').forEach(input => {
+                input.value = '';
+            });
+            updateGame();
+        }
+    </script>
+</body>
+</html>
